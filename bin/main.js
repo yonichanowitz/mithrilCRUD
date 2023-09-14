@@ -347,6 +347,7 @@ eval("// Copyright Joyent, Inc. and other Node contributors.\n//\n// Permission 
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ "./node_modules/mithril/api/mount-redraw.js":
 /*!**************************************************!*\
   !*** ./node_modules/mithril/api/mount-redraw.js ***!
@@ -380,12 +381,15 @@ eval("\n\nvar hyperscript = __webpack_require__(/*! ./render/hyperscript */ \"./
 
 /***/ }),
 
+=======
+>>>>>>> 07005ac (added gitignore file)
 /***/ "./node_modules/mithril/index.js":
 /*!***************************************!*\
   !*** ./node_modules/mithril/index.js ***!
   \***************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ (() => {
 
+<<<<<<< HEAD
 "use strict";
 eval("\n\nvar hyperscript = __webpack_require__(/*! ./hyperscript */ \"./node_modules/mithril/hyperscript.js\")\nvar request = __webpack_require__(/*! ./request */ \"./node_modules/mithril/request.js\")\nvar mountRedraw = __webpack_require__(/*! ./mount-redraw */ \"./node_modules/mithril/mount-redraw.js\")\n\nvar m = function m() { return hyperscript.apply(this, arguments) }\nm.m = hyperscript\nm.trust = hyperscript.trust\nm.fragment = hyperscript.fragment\nm.Fragment = \"[\"\nm.mount = mountRedraw.mount\nm.route = __webpack_require__(/*! ./route */ \"./node_modules/mithril/route.js\")\nm.render = __webpack_require__(/*! ./render */ \"./node_modules/mithril/render.js\")\nm.redraw = mountRedraw.redraw\nm.request = request.request\nm.jsonp = request.jsonp\nm.parseQueryString = __webpack_require__(/*! ./querystring/parse */ \"./node_modules/mithril/querystring/parse.js\")\nm.buildQueryString = __webpack_require__(/*! ./querystring/build */ \"./node_modules/mithril/querystring/build.js\")\nm.parsePathname = __webpack_require__(/*! ./pathname/parse */ \"./node_modules/mithril/pathname/parse.js\")\nm.buildPathname = __webpack_require__(/*! ./pathname/build */ \"./node_modules/mithril/pathname/build.js\")\nm.vnode = __webpack_require__(/*! ./render/vnode */ \"./node_modules/mithril/render/vnode.js\")\nm.PromisePolyfill = __webpack_require__(/*! ./promise/polyfill */ \"./node_modules/mithril/promise/polyfill.js\")\nm.censor = __webpack_require__(/*! ./util/censor */ \"./node_modules/mithril/util/censor.js\")\n\nmodule.exports = m\n\n\n//# sourceURL=webpack://my-webpack-project/./node_modules/mithril/index.js?");
 
@@ -858,6 +862,9 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 "use strict";
 eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   AbortError: () => (/* binding */ AbortError),\n/* harmony export */   \"default\": () => (/* binding */ pMap),\n/* harmony export */   pMapSkip: () => (/* binding */ pMapSkip)\n/* harmony export */ });\n/* harmony import */ var aggregate_error__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! aggregate-error */ \"./node_modules/pokedex-promise-v2/node_modules/aggregate-error/index.js\");\n\n\n/**\nAn error to be thrown when the request is aborted by AbortController.\nDOMException is thrown instead of this Error when DOMException is available.\n*/\nclass AbortError extends Error {\n\tconstructor(message) {\n\t\tsuper();\n\t\tthis.name = 'AbortError';\n\t\tthis.message = message;\n\t}\n}\n\n/**\nTODO: Remove AbortError and just throw DOMException when targeting Node 18.\n*/\nconst getDOMException = errorMessage => globalThis.DOMException === undefined\n\t? new AbortError(errorMessage)\n\t: new DOMException(errorMessage);\n\n/**\nTODO: Remove below function and just 'reject(signal.reason)' when targeting Node 18.\n*/\nconst getAbortedReason = signal => {\n\tconst reason = signal.reason === undefined\n\t\t? getDOMException('This operation was aborted.')\n\t\t: signal.reason;\n\n\treturn reason instanceof Error ? reason : getDOMException(reason);\n};\n\nasync function pMap(\n\titerable,\n\tmapper,\n\t{\n\t\tconcurrency = Number.POSITIVE_INFINITY,\n\t\tstopOnError = true,\n\t\tsignal,\n\t} = {},\n) {\n\treturn new Promise((resolve, reject_) => {\n\t\tif (iterable[Symbol.iterator] === undefined && iterable[Symbol.asyncIterator] === undefined) {\n\t\t\tthrow new TypeError(`Expected \\`input\\` to be either an \\`Iterable\\` or \\`AsyncIterable\\`, got (${typeof iterable})`);\n\t\t}\n\n\t\tif (typeof mapper !== 'function') {\n\t\t\tthrow new TypeError('Mapper function is required');\n\t\t}\n\n\t\tif (!((Number.isSafeInteger(concurrency) || concurrency === Number.POSITIVE_INFINITY) && concurrency >= 1)) {\n\t\t\tthrow new TypeError(`Expected \\`concurrency\\` to be an integer from 1 and up or \\`Infinity\\`, got \\`${concurrency}\\` (${typeof concurrency})`);\n\t\t}\n\n\t\tconst result = [];\n\t\tconst errors = [];\n\t\tconst skippedIndexesMap = new Map();\n\t\tlet isRejected = false;\n\t\tlet isResolved = false;\n\t\tlet isIterableDone = false;\n\t\tlet resolvingCount = 0;\n\t\tlet currentIndex = 0;\n\t\tconst iterator = iterable[Symbol.iterator] === undefined ? iterable[Symbol.asyncIterator]() : iterable[Symbol.iterator]();\n\n\t\tconst reject = reason => {\n\t\t\tisRejected = true;\n\t\t\tisResolved = true;\n\t\t\treject_(reason);\n\t\t};\n\n\t\tif (signal) {\n\t\t\tif (signal.aborted) {\n\t\t\t\treject(getAbortedReason(signal));\n\t\t\t}\n\n\t\t\tsignal.addEventListener('abort', () => {\n\t\t\t\treject(getAbortedReason(signal));\n\t\t\t});\n\t\t}\n\n\t\tconst next = async () => {\n\t\t\tif (isResolved) {\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst nextItem = await iterator.next();\n\n\t\t\tconst index = currentIndex;\n\t\t\tcurrentIndex++;\n\n\t\t\t// Note: `iterator.next()` can be called many times in parallel.\n\t\t\t// This can cause multiple calls to this `next()` function to\n\t\t\t// receive a `nextItem` with `done === true`.\n\t\t\t// The shutdown logic that rejects/resolves must be protected\n\t\t\t// so it runs only one time as the `skippedIndex` logic is\n\t\t\t// non-idempotent.\n\t\t\tif (nextItem.done) {\n\t\t\t\tisIterableDone = true;\n\n\t\t\t\tif (resolvingCount === 0 && !isResolved) {\n\t\t\t\t\tif (!stopOnError && errors.length > 0) {\n\t\t\t\t\t\treject(new aggregate_error__WEBPACK_IMPORTED_MODULE_0__[\"default\"](errors));\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t\tisResolved = true;\n\n\t\t\t\t\tif (skippedIndexesMap.size === 0) {\n\t\t\t\t\t\tresolve(result);\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t\tconst pureResult = [];\n\n\t\t\t\t\t// Support multiple `pMapSkip`'s.\n\t\t\t\t\tfor (const [index, value] of result.entries()) {\n\t\t\t\t\t\tif (skippedIndexesMap.get(index) === pMapSkip) {\n\t\t\t\t\t\t\tcontinue;\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tpureResult.push(value);\n\t\t\t\t\t}\n\n\t\t\t\t\tresolve(pureResult);\n\t\t\t\t}\n\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tresolvingCount++;\n\n\t\t\t// Intentionally detached\n\t\t\t(async () => {\n\t\t\t\ttry {\n\t\t\t\t\tconst element = await nextItem.value;\n\n\t\t\t\t\tif (isResolved) {\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t\tconst value = await mapper(element, index);\n\n\t\t\t\t\t// Use Map to stage the index of the element.\n\t\t\t\t\tif (value === pMapSkip) {\n\t\t\t\t\t\tskippedIndexesMap.set(index, value);\n\t\t\t\t\t}\n\n\t\t\t\t\tresult[index] = value;\n\n\t\t\t\t\tresolvingCount--;\n\t\t\t\t\tawait next();\n\t\t\t\t} catch (error) {\n\t\t\t\t\tif (stopOnError) {\n\t\t\t\t\t\treject(error);\n\t\t\t\t\t} else {\n\t\t\t\t\t\terrors.push(error);\n\t\t\t\t\t\tresolvingCount--;\n\n\t\t\t\t\t\t// In that case we can't really continue regardless of `stopOnError` state\n\t\t\t\t\t\t// since an iterable is likely to continue throwing after it throws once.\n\t\t\t\t\t\t// If we continue calling `next()` indefinitely we will likely end up\n\t\t\t\t\t\t// in an infinite loop of failed iteration.\n\t\t\t\t\t\ttry {\n\t\t\t\t\t\t\tawait next();\n\t\t\t\t\t\t} catch (error) {\n\t\t\t\t\t\t\treject(error);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t})();\n\t\t};\n\n\t\t// Create the concurrent runners in a detached (non-awaited)\n\t\t// promise. We need this so we can await the `next()` calls\n\t\t// to stop creating runners before hitting the concurrency limit\n\t\t// if the iterable has already been marked as done.\n\t\t// NOTE: We *must* do this for async iterators otherwise we'll spin up\n\t\t// infinite `next()` calls by default and never start the event loop.\n\t\t(async () => {\n\t\t\tfor (let index = 0; index < concurrency; index++) {\n\t\t\t\ttry {\n\t\t\t\t\t// eslint-disable-next-line no-await-in-loop\n\t\t\t\t\tawait next();\n\t\t\t\t} catch (error) {\n\t\t\t\t\treject(error);\n\t\t\t\t\tbreak;\n\t\t\t\t}\n\n\t\t\t\tif (isIterableDone || isRejected) {\n\t\t\t\t\tbreak;\n\t\t\t\t}\n\t\t\t}\n\t\t})();\n\t});\n}\n\nconst pMapSkip = Symbol('skip');\n\n\n//# sourceURL=webpack://my-webpack-project/./node_modules/pokedex-promise-v2/node_modules/p-map/index.js?");
+=======
+eval("throw new Error(\"Module build failed: Error: ENOENT: no such file or directory, open '/home/agent_shix_thirteen/mithril_playground/node_modules/mithril/index.js'\");\n\n//# sourceURL=webpack://mithril_playground/./node_modules/mithril/index.js?");
+>>>>>>> 07005ac (added gitignore file)
 
 /***/ })
 
@@ -888,6 +895,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /******/ 	}
 /******/ 	
 /************************************************************************/
+<<<<<<< HEAD
 /******/ 	/* webpack/runtime/compat get default export */
 /******/ 	(() => {
 /******/ 		// getDefaultExport function for compatibility with non-harmony modules
@@ -941,6 +949,8 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /******/ 	})();
 /******/ 	
 /************************************************************************/
+=======
+>>>>>>> 07005ac (added gitignore file)
 /******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
