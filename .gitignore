@@ -1,1 +1,9 @@
+<<<<<<< HEAD
 node_modules
+=======
+./node_modules
+```
+I have tried to add the following to my .gitignore file:
+```
+node_modules/
+>>>>>>> 019e3a7 (removed node modules from github, added readme)
