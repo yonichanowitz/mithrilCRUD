@@ -2,6 +2,21 @@ import m from 'mithril'
 import PokeAPI from 'pokedex-promise-v2';
 const P = new PokeAPI();
 
+type Sprites = {
+    back_default: string,
+    front_default: string
+}
+
+type Ability = {
+    name: string,
+    url: string
+}
+
+type Move = {
+    name: string,
+    url: string 
+}
+
 type PokeStats = {
     abilities: any[],
     base_experience: number,
@@ -12,11 +27,11 @@ type PokeStats = {
     id: number,
     is_default: boolean,
     location_area_encounters?: string,
-    moves: any[],
+    moves: Array<any>,
     name: string,
     order: number,
     species: any[],
-    sprites: any[],
+    sprites: Sprites,
     stats: any[],
     types: any[],
     weight: number
@@ -24,7 +39,6 @@ type PokeStats = {
 
 const PokeView = {
     PokeData: [] as any[],
-    showStats: false,
     oninit: function() {
         m.request({
             method: "GET",
@@ -35,13 +49,13 @@ const PokeView = {
         })
     },
     view: function () {
-        return m("div.poke-list", [this.PokeData ? 
+        return m("div", [this.PokeData ? 
             m("ul", [
-                this.PokeData.map((pokemon) => 
+                this.PokeData.map(({name}) => 
                 {return m("li", [
-                    pokemon.name,
-                    this.showStats ? m(SinglePokemon, {id: pokemon.name}) : null,
-                    m("button", {onclick: () => {this.showStats = !this.showStats}}, "Show Stats")
+                    name,
+                    m(SinglePokemon, {id: name}),
+                    
                 ])
                 })
             ]) 
@@ -52,40 +66,46 @@ const PokeView = {
 }
 
 const SinglePokemon = {
+    showStats: false,
     pokedetails: [] as PokeStats[],
-    oninit: function(vnode: any) {
+    getetails: function(props: any) {
         m.request({
             method: "GET",
-            url: "https://pokeapi.co/api/v2/pokemon/" + vnode.attrs.id
+            url: "https://pokeapi.co/api/v2/pokemon/" + props
         }).then((response: any) => {
             console.log(response);
             SinglePokemon.pokedetails = response;
         })
     },
+    oninit: function(vnode: any) {
+    
+    },
     view: function(vnode: any) {
-        return m("div", this.pokedetails)
-        
-        // .map((pokemon) => {
-        //     return m("div", [
-        //         m("div", "Name: " + pokemon.name),
-        //         m("div", "Height: " + pokemon.height),
-        //         m("div", "Weight: " + pokemon.weight),
-        //         m("div", "Base Experience: " + pokemon.base_experience),
-        //         m("div", "Abilities: " + pokemon.abilities.map((ability) => {
-        //             return m("div", ability.ability.name)
-        //         })),
-        //         m("div", "Moves: " + pokemon.moves.map((move) => {
-        //             return m("div", move.move.name)
-        //         })),
-        //         m("div", "Stats: " + pokemon.stats.map((stat) => {
-        //             return m("div", stat.stat.name + ": " + stat.base_stat)
-        //         })),
-        //         m("div", "Types: " + pokemon.types.map((type) => {
-        //             return m("div", type.type.name)
-        //         })),
-        //         m("div", "Sprites: " + pokemon.sprites.front_default)
-        //     ])
-        // }))
+        return m("div.poke-list", [
+            m("button.button-stats", {onclick: () => {this.getetails(vnode.attrs.id); this.showStats = !this.showStats}}, "Show Stats"),
+            this.showStats ?
+                    m("div.d-flex", [
+                    m("div", "Name: " + this.pokedetails.name),
+                    m("div", "Height: " + this.pokedetails.height),
+                    m("div", "Weight: " + this.pokedetails.weight),
+                    m("div", "Base Experience: " + this.pokedetails.base_experience),
+                    m("div", ["Abilities: ", this.pokedetails.abilities.map(({ability}) => {
+                        return m("div", ability.name)
+                    })]),
+                    m("ul.moves-list", ["Moves: ", this.pokedetails.moves.map(({move}) => {
+                        return m("li.move", move.name)
+                    })]),
+                    m("div.moves-list", ["Stats: ", this.pokedetails.stats.map(({stat, base_stat}) => {
+                        return m("div", `${stat.name} : ${base_stat}`)
+                    })]),
+                    m("div", ["Types: ", this.pokedetails.types.map((type) => {
+                        return m("div", type.type.name)
+                    })]),
+                    m("div", ["Sprites: ",m("img", {src: this.pokedetails.sprites.front_default}])
+                ])
+             : null,
+            m("div", "__ __ __ __ ")
+        ])
     }
 }
 

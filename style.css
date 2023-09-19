@@ -1,12 +1,32 @@
 .poke-list {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+/
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 5px black;
     background-color: red;
     color: aliceblue;
     font-weight: 100;
     font-size: 1.5rem;
+}
+.button-stats {
+    background-color: rgb(25, 58, 241);
+    color: aliceblue;
+    font-weight: 100;
+    font-size: 1.5rem;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+}
+.moves-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    list-style: none;
+}
+.move {
+    border-radius: 2px solid black;
+    background-color: rgb(25, 58, 241);
+    margin: 5px;
 }
