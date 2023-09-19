@@ -1,0 +1,12 @@
+.poke-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: red;
+    color: aliceblue;
+    font-weight: 100;
+    font-size: 1.5rem;
+}

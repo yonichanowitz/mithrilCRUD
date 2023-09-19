@@ -3,22 +3,35 @@
     "express": "^4.18.2",
     "mithril": "^2.2.2",
     "node": "^20.6.0",
-    "typescript": "^5.2.2"
+    "pokedex-promise-v2": "^4.1.1"
   },
   "devDependencies": {
     "@types/mithril": "^2.0.14",
+    "@webpack-cli/generators": "^3.0.7",
+    "css-loader": "^6.8.1",
+    "html-webpack-plugin": "^5.5.3",
+    "mini-css-extract-plugin": "^2.7.6",
+    "style-loader": "^3.3.3",
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.2.2",
     "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
   },
-  "name": "mithril_playground",
+  "name": "my-webpack-project",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack ./index.js --output-path ./bin --mode=development --watch"
+    "start": "webpack ./index.ts --output-path ./bin --mode=development --watch",
+    "build": "webpack --mode=production --node-env=production",
+    "build:dev": "webpack --mode=development",
+    "build:prod": "webpack --mode=production --node-env=production",
+    "watch": "webpack --watch",
+    "serve": "webpack serve"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "My webpack project"
 }
